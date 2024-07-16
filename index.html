@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mods Audio sm64ex-coop android</title>
+    <link rel="icon" type="image/x-icon" href="hat-logo.png">
+    <meta property="og:title" content="Mods Audio sm64ex-coop android">
+    <meta property="og:description" content="Cómo crear mod de Canciones para SM64EX-COOP Android utilizando | Termux |">
+    <meta property="og:image" content="https://coop-tutorial.github.io/retired.jpg">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: "Roboto", sans-serif;
+        background: #0c0c0c; /* Fondo oscuro */
+        color: #f5f5f5; /* Texto claro */
+    }
+    .container {
+        margin: 20px;
+    }
+    .label {
+        padding: 10px;
+        font-size: 18px;
+    }
+    .copy-text {
+        position: relative;
+        padding: 10px;
+        background: #1f1f1f; /* Fondo oscuro para el contenedor */
+        border: 1px solid #444; /* Borde oscuro */
+        border-radius: 10px;
+        display: flex;
+        margin-bottom: 15px;
+    }
+    .copy-text input.text {
+        padding: 10px;
+        font-size: 18px;
+        color: #f5f5f5; /* Texto claro */
+        background: #1f1f1f; /* Fondo oscuro */
+        border: none;
+        outline: none;
+        flex: 1;
+    }
+    .copy-text button {
+        padding: 10px;
+        background: #ff4500; /* Color del botón basado en Mario Kart */
+        color: #fff;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        cursor: pointer;
+        position: relative;
+    }
+    .copy-text button:active {
+        background: #e03e00; /* Color más oscuro al hacer clic */
+    }
+    .copy-text button:before {
+        content: "¡Copiado!";
+        position: absolute;
+        top: -45px;
+        right: 0;
+        background: #ff4500;
+        padding: 8px 10px;
+        border-radius: 20px;
+        font-size: 15px;
+        display: none;
+        color: white;
+    }
+    .copy-text button:after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        right: 25px;
+        width: 10px;
+        height: 10px;
+        background: #ff4500;
+        transform: rotate(45deg);
+        display: none;
+    }
+    .copy-text.active button:before,
+    .copy-text.active button:after {
+        display: block;
+    }
+    footer {
+        position: fixed;
+        height: 50px;
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        background-color: #ff4500;
+        color: white;
+        text-align: center;
+        padding: 15px 0;
+    }
+    /*TARJETAS COLORES*/
+.notification {
+    display: flex;
+    color: #d3ea10;
+    flex-direction: column;
+    isolation: isolate;
+    position: relative;
+    width: 18rem;
+    height: 8rem;
+    background: #29292c;
+    border-radius: 1rem;
+    overflow: hidden;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 16px;
+}
+
+.notification:before {
+    position: absolute;
+    content: "";
+    inset: 0.0625rem;
+    border-radius: 0.9375rem;
+    background: #18181b;
+    z-index: 2;
+}
+
+.notification:after {
+    position: absolute;
+    content: "";
+    width: 0.25rem;
+    inset: 0.65rem auto 0.65rem 0.5rem;
+    border-radius: 0.125rem;
+    background: var(--gradient);
+    transition: transform 300ms ease;
+    z-index: 4;
+}
+
+.notification:hover:after {
+    transform: translateX(0.15rem);
+}
+
+.notititle {
+    padding: 0.65rem 0.25rem 0.4rem 1.25rem;
+    font-weight: 500;
+    font-size: 1.1rem;
+    transition: transform 300ms ease;
+    z-index: 5;
+}
+
+.notification:hover .notititle {
+    transform: translateX(0.15rem);
+}
+
+.notibody {
+    color: #99999d;
+    padding: 0 1.25rem;
+    transition: transform 300ms ease;
+    z-index: 5;
+}
+
+.notification:hover .notibody {
+    transform: translateX(0.25rem);
+}
+
+.notiglow,
+.notiborderglow {
+    position: absolute;
+    width: 20rem;
+    height: 20rem;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle closest-side at center, white, transparent);
+    opacity: 0;
+    transition: opacity 300ms ease;
+}
+
+.notiglow {
+    z-index: 3;
+}
+
+.notiborderglow {
+    z-index: 1;
+}
+
+.notification:hover .notiglow {
+    opacity: 0.1;
+}
+
+.notification:hover .notiborderglow {
+    opacity: 0.1;
+}
+
+.notification.blue {
+    --gradient: linear-gradient(to bottom, #2eadff, #3d83ff, #7e61ff);
+    --color: #32a6ff;
+}
+
+.notification.green {
+    --gradient: linear-gradient(to bottom, #1de9b6, #1dc9b6, #1db6a6);
+    --color: #1de9b6;
+}
+
+.notification.red {
+    --gradient: linear-gradient(to bottom, #ff3e3e, #ff1e1e, #e61e1e);
+    --color: #ff3e3e;
+}
+
+.notification.yellow {
+    --gradient: linear-gradient(to bottom, #ffeb3b, #ffd700, #ffca28);
+    --color: #ffeb3b;
+}
+.image-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.centered-image {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 8px rgba(0, 128, 0, 0.5), 
+                0 6px 20px rgba(0, 0, 255, 0.5), 
+                0 8px 30px rgba(255, 0, 0, 0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.centered-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 128, 0, 0.7), 
+                0 8px 24px rgba(0, 0, 255, 0.7), 
+                0 12px 36px rgba(255, 0, 0, 0.7);
+}
+p.gaming-style {
+    font-size: 1.2em;
+    color: white; /* Color verde llamativo */
+    text-shadow: 0 0 5px #00FF00, 
+                 0 0 10px #00FF00, 
+                 0 0 15px #FF0000, 
+                 0 0 20px #FF0000, 
+                 0 0 25px #0000FF, 
+                 0 0 30px #0000FF, 
+                 0 0 35px #0000FF; 
+    
+    
+    border: 2px solid #00FF00;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+p.gaming-style:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #00FF00, 
+                0 0 20px #FF0000, 
+                0 0 30px #0000FF;
+}
+
+.footer-gaming {
+    background-color: #1a1a1a;
+    padding: 20px;
+    text-align: center;
+    border-top: 2px solid #00FF00;
+}
+
+.footer-gaming p {
+    margin: 0 0 10px;
+    color: #00FF00;
+    font-size: 1.1em;
+}
+
+.footer-gaming a {
+    color: #00FF00;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-gaming a:hover {
+    color: #FF0000;
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.footer-button {
+    background-color: #1a1a1a;
+    color: #00FF00;
+    border: 2px solid #00FF00;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.footer-button:hover {
+    background-color: #00FF00;
+    color: #1a1a1a;
+}
+.social-section {
+    text-align: center;
+    padding: 20px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.social-section h2 {
+    color: #00FF00;
+    margin-bottom: 20px;
+    
+}
+
+.social-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.social-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.social-item a {
+    display: flex;
+    align-items: center;
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: color 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.social-item a:hover {
+    color: #FF0000;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    -webkit-tap-highlight-color: transparent;
+}
+</style>
+</head>
+<body>
+
+        <h1 style="color: #50889e; text-align: center; font-size: 1.5em; padding: 20px;">MOD MUSICA YT SM64EX-COOP ANDROID</h1>
+        <p> aprende a poner tus canciones favoritas para que
+                todos tus amigos puedan escuchar en sus partidas 
+                de <span style="color: yellow;">coopnet</span></p>
+          <a href="https://youtube.com/@retired64" class="image-link">
+    <img src="retired.jpg" alt="Imagen Descripción" class="centered-image">
+</a>
+<p class="gaming-style">Convierte las URL de YT de listas de reproducción yt-dlp o álbumes locales en paquetes de música generados aleatoriamente para sm64ex-coop</p>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Otorgar permisos</div>
+    <div class="notibody">Si es la primera vez que usas Termux en tu dispositivo o lo acabas de instalar y no les has dado permisos</div>
+</div>
+
+        <div class="copy-text">
+            <input type="text" class="text" value="termux-setup-storage" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Instalando herramientas</div>
+    <div class="notibody">Ahora deberás instalar estas herramientas igual copiar y pegar en Termux:</div>
+</div>
+
+   
+        <div class="copy-text">
+            <input type="text" class="text" value="pkg install git python-pip ffmpeg" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Clonar Repositorio Github</div>
+    <div class="notibody">Paso 3: Clonaremos el repositorio dónde se hará la magia</div>
+</div>
+        <div class="copy-text">
+            <input type="text" class="text" value="git clone https://www.github.com/robertkirkman/music-pack-generator-coop.git" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Entrar a la carpeta</div>
+    <div class="notibody">Entramos a la carpeta de la magia.</div>
+</div>
+
+        <div class="copy-text">
+            <input type="text" class="text" value="cd music-pack-generator-coop" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Instalar Requisitos</div>
+    <div class="notibody">Instalamos las bibliotecas para la magia.</div>
+</div>
+
+        <div class="copy-text">
+            <input type="text" class="text" value="pip install -r requirements.txt" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Crea la Carpeta</div>
+    <div class="notibody">Aseguramos de tener estas carpetas creadas</div>
+</div>
+
+        <div class="copy-text">
+            <input type="text" class="text" value="mkdir -p /storage/emulated/0/com.owokitty.sm64excoop/user/mods" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div>
+<div class="notification yellow">
+    <div class="notiglow"></div>
+    <div class="notiborderglow"></div>
+    <div class="notititle">Crear MOD DE YOUTUBE</div>
+    <div class="notibody">ojo puedes reemplazar el URL con la de tu playlist favorita</div>
+</div>
+        <div class="copy-text">
+            <input type="text" class="text" value="./music-pack-generator.py https://www.youtube.com/playlist?list=PLp_G0HWfCo5raQSCb_BxY6oA1OVnNBolc --interactive" readonly />
+            <button onclick="copyCommand(this)">Copiar</button>
+        </div><br>
+    <section class="social-section">
+        <h2>Síguenos en</h2>
+        <ul class="social-list">
+            <li class="social-item">
+                <a href="https://youtube.com/@retired64" target="_blank">
+                    <img src="yt.png" alt="Retired64 Youtube channel" class="social-icon">
+                    <span>Retired64</span>
+                </a>
+            </li>
+            <li class="social-item">
+                <a href="https://youtube.com/@tacokoneko" target="_blank">
+                    <img src="YT.png" alt="Owokitty Youtube channel" class="social-icon">
+                    <span>Owokitty</span>
+                </a>
+            </li>
+            <li class="social-item">
+                <a href="https://github.com/coop-tutorial" target="_blank">
+                    <img src="gh.png" alt="Retired64 github" class="social-icon">
+                    <span>Retired64</span>
+                </a>
+            </li>
+            <li class="social-item">
+                <a href="https://github.com/robertkirkman/sm64ex-coop/blob/android/README_android.md" target="_blank">
+                    <img src="gh.png" alt="owokitty github sm64excoop" class="social-icon">
+                    <span>Owokitty</span>
+                </a>
+            </li>
+            <!-- Añade más redes sociales según sea necesario -->
+        </ul>
+    </section>
+    <!--
+
+<br><br><br>
+ <footer class="footer-gaming">
+        <p>Ver video: <a href="https://" target="_blank">click aquí</a></p>                
+    </footer> -->
+    <script>
+        function copyCommand(button) {
+            const copyText = button.parentElement;
+            const input = copyText.querySelector("input.text");
+            input.select();
+            document.execCommand("copy");
+            copyText.classList.add("active");
+            window.getSelection().removeAllRanges();
+            setTimeout(function () {
+                copyText.classList.remove("active");
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
