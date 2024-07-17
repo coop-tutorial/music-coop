@@ -347,6 +347,22 @@ p.gaming-style:hover {
     margin-right: 10px;
     -webkit-tap-highlight-color: transparent;
 }
+
+    /* Título H3 rojo */
+    .titulo-rojo {
+      color: red;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    /* Texto blanco con borde verde y sombra roja */
+    .texto-blanco {
+      color: white;
+      border: 2px solid green;
+      box-shadow: 5px 5px 10px red;
+      padding: 10px;
+      text-align: left;
+    }
 </style>
 </head>
 <body>
@@ -430,7 +446,19 @@ p.gaming-style:hover {
     <div class="notiborderglow"></div>
     <div class="notititle">Crear MOD DE YOUTUBE</div>
     <div class="notibody">ojo puedes reemplazar el URL con la de tu playlist favorita</div>
+    
 </div>
+<h3 class="titulo-rojo">Argumento</h3>
+
+  <div class="texto-blanco">
+    <p>Lista de argumentos para el script:</p>
+
+    <ul>
+      <li><code>[yt-dlp URLs|local path]</code>: Ruta local desde donde copiar archivos .mp3 o una lista separada por espacios de URLs de yt-dlp (https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)</li>
+      <li><code>--all</code>: (para modo de descarga) Descarga toda la lista de reproducción en lugar de solo las primeras 23 pistas</li>
+      <li><code>--interactive</code>: Permite elegir barajar la lista de reproducción antes de guardarla</li>
+    </ul>
+  </div>
         <div class="copy-text">
             <input type="text" class="text" value="./music-pack-generator.py https://www.youtube.com/playlist?list=PLp_G0HWfCo5raQSCb_BxY6oA1OVnNBolc --interactive" readonly />
             <button onclick="copyCommand(this)">Copiar</button>
