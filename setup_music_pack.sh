@@ -84,7 +84,7 @@ fi
 
 # Crear el directorio necesario
 echo "Creando directorio necesario para mods..."
-mkdir -p storage/emulated/0/com.owokitty.sm64excoop/user/mods
+mkdir -p /storage/emulated/0/com.owokitty.sm64excoop/user/mods
 
 # Crear un alias para ejecutar el menú del archivo Python
 echo "Creando alias para ejecutar el menú del generador de música..."
